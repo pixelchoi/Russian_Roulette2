@@ -21,31 +21,46 @@ function initGame() {
     // 1. 공탄(통과) 리스트로 탄창 완전 초기화
     penalties = Array(TOTAL_ROUNDS).fill("통과!");
 
-    // 2. 사용자 입력값 파싱 (벌칙탄 추출)
+    // 2. 사용자 입력값 파싱 (공백 제거 후 실제 입력값 추출)
     let items = penaltyInput.value.split(',').map(item => item.trim()).filter(item => item !== "");
     let realPenalties = items.filter(item => item !== "통과!" && item !== "");
     if (realPenalties.length === 0) realPenalties.push("꽝!");
 
     let targetIndex = parseInt(secretTarget.value) - 1; // 사용자는 1부터 입력하므로 인덱스 보정(-1)
 
-    // 3. 실탄 배치 로직 패치
+    // 3. 실탄 배치 로직 (버그 수정 및 확률 밸런스 패치)
     if (!isNaN(targetIndex) && targetIndex >= 0 && targetIndex < TOTAL_ROUNDS) {
         // [A] 저격 모드 활성화 시:
-        // 지정된 자리에 첫 번째 벌칙을 확실하게 꽂아 넣고, '그 외의 29칸은 무조건 100% 공탄' 처리합니다.
-        penalties[targetIndex] = realPenalties[0];
+        // 배열 자체가 통째로 들어가는 버그 수정 -> 입력된 이름 중 단 '하나'만 골라 꽂아 넣습니다.
+        // 해당 자리를 제외한 나머지 29칸은 무조건 100% 공탄("통과!")이므로 그 전에는 절대 안 터집니다.
+        let luckyPick = realPenalties[Math.floor(Math.random() * realPenalties.length)];
+        penalties[targetIndex] = luckyPick;
     } else {
-        // [B] 순수 랜덤 모드 시:
-        // 사용자가 입력한 벌칙 목록의 개수만큼만 딱 1발씩 무작위 빈 공간을 찾아 배치합니다. (과도한 복사 도배 제거)
-        let availableIndices = [];
-        for (let i = 0; i < TOTAL_ROUNDS; i++) {
-            availableIndices.push(i);
-        }
+        // [B] 순수 랜덤 모드 시 (후반부 확률 버프 적용):
+        // 1~10번째(앞쪽) 보다는 11~30번째(뒤쪽) 공간을 우선 확보하여 확률을 뒤로 밉니다.
+        let frontIndices = []; // 0 ~ 9 (1~10번째 총알)
+        let backIndices = [];  // 10 ~ 29 (11~30번째 총알)
         
+        for (let i = 0; i < TOTAL_ROUNDS; i++) {
+            if (i < 10) frontIndices.push(i);
+            else backIndices.push(i);
+        }
+
+        // 입력된 벌칙(또는 이름) 개수만큼 실탄 배치
         for (let k = 0; k < realPenalties.length; k++) {
-            if (availableIndices.length === 0) break;
-            // 남아있는 빈 칸 인덱스 중 하나를 무작위 선택
-            let randKey = Math.floor(Math.random() * availableIndices.length);
-            let chosenSlot = availableIndices.splice(randKey, 1)[0];
+            let chosenSlot;
+            
+            // 85%의 높은 확률로 탄창 뒤쪽에 실탄을 배치하여 초반 광탈 방지 및 빌드업 제공
+            if (backIndices.length > 0 && (Math.random() < 0.85 || frontIndices.length === 0)) {
+                let randKey = Math.floor(Math.random() * backIndices.length);
+                chosenSlot = backIndices.splice(randKey, 1)[0];
+            } else if (frontIndices.length > 0) {
+                let randKey = Math.floor(Math.random() * frontIndices.length);
+                chosenSlot = frontIndices.splice(randKey, 1)[0];
+            } else {
+                break;
+            }
+            
             penalties[chosenSlot] = realPenalties[k];
         }
     }
@@ -94,7 +109,7 @@ function pullTrigger() {
     bulletCounter.innerText = `MAG: ${TOTAL_ROUNDS - currentShotCount} / 30 ROUNDS`;
 
     if (currentResult !== "통과!") {
-        clearInterval(autoInterval); // 실탄 격발 시 즉시 연사 타이머 정지
+        clearInterval(autoInterval); // 실탄 격발 시 즉시 연사 정지
         isGameOver = true;
         shootBtn.disabled = true;
         autoBtn.disabled = true;
