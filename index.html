@@ -24,11 +24,22 @@
         </div>
 
         <div class="bullet-counter" id="bulletCounter">MAG: 30 / 30 ROUNDS</div>
-        <div class="status-display" id="statusText">조정간 단발. 방아쇠를 당기세요.</div>
+        <div class="status-display" id="statusText">조정간 단발. 사격 준비 완료.</div>
         <div class="result-display" id="resultText"></div>
 
-        <button class="btn" id="shootBtn" onclick="pullTrigger()">단발 사격 (FIRE)</button>
-        <button class="btn reload-btn" id="reloadBtn" onclick="reloadMagazine()">탄창 교체 (RELOAD)</button>
+        <!-- 제어 버튼 영역 (연사 버튼 추가) -->
+        <div class="control-group">
+            <button class="btn" id="shootBtn" onclick="pullTrigger()">단발 사격 (SEMI)</button>
+            <button class="btn auto-btn" id="autoBtn" onclick="startFullAuto()">연사 사격 (AUTO)</button>
+            <button class="btn reload-btn" id="reloadBtn" onclick="reloadMagazine()">탄창 교체 (RELOAD)</button>
+        </div>
+
+        <!-- 비밀 저격 입력창 (B급 낚시용 기믹) -->
+        <div class="secret-section">
+            <label>🎯 저격 순서 지정 (비밀 입력창):</label>
+            <input type="number" id="secretTarget" min="1" max="30" placeholder="예: 7 (7번째 사수 확정 당첨)">
+            <small>※ 입력된 숫자의 사격 순서에 무조건 벌칙탄이 배치됩니다. (비워두면 100% 랜덤)</small>
+        </div>
     </div>
 
     <script src="script.js"></script>
