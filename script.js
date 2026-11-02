@@ -1,5 +1,5 @@
 const TOTAL_ROUNDS = 30;
-let penalties = [];
+let penalties = Array(TOTAL_ROUNDS).fill("통과!");
 let currentShotCount = 0;
 let isGameOver = false;
 let autoInterval = null;
@@ -17,40 +17,40 @@ const autoBtn = document.getElementById('autoBtn');
 
 function initGame() {
     clearInterval(autoInterval);
+    
+    // 1. 공탄(통과) 리스트로 탄창 완전 초기화
+    penalties = Array(TOTAL_ROUNDS).fill("통과!");
+
+    // 2. 사용자 입력값 파싱 (벌칙탄 추출)
     let items = penaltyInput.value.split(',').map(item => item.trim()).filter(item => item !== "");
     let realPenalties = items.filter(item => item !== "통과!" && item !== "");
     if (realPenalties.length === 0) realPenalties.push("꽝!");
 
-    penalties = Array(TOTAL_ROUNDS).fill("통과!");
-    let targetIndex = parseInt(secretTarget.value) - 1;
+    let targetIndex = parseInt(secretTarget.value) - 1; // 사용자는 1부터 입력하므로 인덱스 보정(-1)
 
+    // 3. 실탄 배치 로직 패치
     if (!isNaN(targetIndex) && targetIndex >= 0 && targetIndex < TOTAL_ROUNDS) {
-        penalties[targetIndex] = realPenalties; // 첫 번째 실탄 무조건 저격 배치
-        
+        // [A] 저격 모드 활성화 시:
+        // 지정된 자리에 첫 번째 벌칙을 확실하게 꽂아 넣고, '그 외의 29칸은 무조건 100% 공탄' 처리합니다.
+        penalties[targetIndex] = realPenalties[0];
+    } else {
+        // [B] 순수 랜덤 모드 시:
+        // 사용자가 입력한 벌칙 목록의 개수만큼만 딱 1발씩 무작위 빈 공간을 찾아 배치합니다. (과도한 복사 도배 제거)
         let availableIndices = [];
         for (let i = 0; i < TOTAL_ROUNDS; i++) {
-            if (i !== targetIndex) availableIndices.push(i);
+            availableIndices.push(i);
         }
-        for (let k = 1; k < realPenalties.length; k++) {
+        
+        for (let k = 0; k < realPenalties.length; k++) {
             if (availableIndices.length === 0) break;
+            // 남아있는 빈 칸 인덱스 중 하나를 무작위 선택
             let randKey = Math.floor(Math.random() * availableIndices.length);
-            let targetSlot = availableIndices.splice(randKey, 1);
-            penalties[targetSlot] = realPenalties[k];
-        }
-    } else {
-        let baseItems = [...realPenalties];
-        while(realPenalties.length < TOTAL_ROUNDS * 0.3) {
-            realPenalties = realPenalties.concat(baseItems);
-        }
-        for(let i = 0; i < realPenalties.length && i < TOTAL_ROUNDS; i++) {
-            penalties[i] = realPenalties[i];
-        }
-        for (let i = penalties.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [penalties[i], penalties[j]] = [penalties[j], penalties[i]];
+            let chosenSlot = availableIndices.splice(randKey, 1)[0];
+            penalties[chosenSlot] = realPenalties[k];
         }
     }
 
+    // 4. 무기 제어 및 UI 리셋
     currentShotCount = 0;
     isGameOver = false;
     resultText.innerText = "";
@@ -61,6 +61,7 @@ function initGame() {
     shootBtn.disabled = false;
     autoBtn.disabled = false;
 
+    // 30발 탄창 그래픽 재생성
     magFeed.innerHTML = "";
     for(let i = 0; i < TOTAL_ROUNDS; i++) {
         let node = document.createElement('div');
@@ -70,7 +71,7 @@ function initGame() {
 }
 
 function pullTrigger() {
-    if (isGameOver) { return true; } // 게임 종료 시 true를 반환하여 연사 타이머 즉각 정지
+    if (isGameOver) { return true; } 
     
     if (currentShotCount >= TOTAL_ROUNDS) {
         clearInterval(autoInterval);
@@ -93,7 +94,7 @@ function pullTrigger() {
     bulletCounter.innerText = `MAG: ${TOTAL_ROUNDS - currentShotCount} / 30 ROUNDS`;
 
     if (currentResult !== "통과!") {
-        clearInterval(autoInterval); // 연사 스톱
+        clearInterval(autoInterval); // 실탄 격발 시 즉시 연사 타이머 정지
         isGameOver = true;
         shootBtn.disabled = true;
         autoBtn.disabled = true;
