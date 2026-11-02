@@ -1,0 +1,182 @@
+:root {
+    --bg-color: #1a1a1c;
+    --panel-color: #24252a;
+    --accent-color: #ff3838;
+    --safe-color: #26de81;
+    --scar-tan: #d4a373; /* SCAR 소총 특유의 사막색(Tan) */
+    --bullet-gold: #fed330;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* 격발 시 화면 반동 애니메이션 */
+@keyframes recoil {
+    0% { transform: translateY(0px) scale(1); }
+    20% { transform: translateY(-10px) scale(0.98); }
+    40% { transform: translateY(5px) rotate(0.5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.recoil-effect {
+    animation: recoil 0.2s ease-out;
+}
+
+.container {
+    background-color: var(--panel-color);
+    border-top: 5px solid var(--scar-tan);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    text-align: center;
+    width: 90%;
+    max-width: 48px0;
+    width: 450px;
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--scar-tan);
+}
+
+.input-section {
+    margin-bottom: 20px;
+}
+
+.input-section label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #888;
+}
+
+textarea {
+    width: 100%;
+    height: 55px;
+    background-color: #16171a;
+    border: 1px solid #3e4149;
+    border-radius: 6px;
+    color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    font-size: 13px;
+}
+
+textarea:focus {
+    border-color: var(--scar-tan);
+    outline: none;
+}
+
+/* 30발 전술 탄창 UI 구조 */
+.magazine-box {
+    width: 140px;
+    height: 220px;
+    background: #191a1f;
+    border: 3px solid #3a3b45;
+    border-radius: 8px;
+    margin: 20px auto;
+    padding: 10px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: flex-end; /* 총알이 아래서부터 위로 쌓이게 */
+}
+
+.magazine-feed {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5열 구조 */
+    grid-template-rows: repeat(6, 1fr);    /* 6행 구조 = 총 30칸 */
+    gap: 4px;
+}
+
+/* 개별 총알 그래픽 */
+.bullet-node {
+    background: linear-gradient(to bottom, var(--bullet-gold), #b7950b);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: all 0.15s ease;
+}
+
+/* 발사되어 소모된 쉘 */
+.bullet-node.spent {
+    background: #2f3542;
+    border: 1px dashed #57606f;
+    box-shadow: none;
+    opacity: 0.2;
+}
+
+.status-display {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #ccc;
+}
+
+.result-display {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 15px 0;
+    min-height: 40px;
+}
+
+.bullet-counter {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--scar-tan);
+    background-color: #16171a;
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* 제어 장치 버튼 */
+.btn {
+    background-color: var(--scar-tan);
+    color: #1a1a1c;
+    border: none;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 5px;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background-color: #e5b383;
+}
+
+.btn:disabled {
+    background-color: #4b4d56;
+    color: #7f8c8d;
+    cursor: not-allowed;
+}
+
+.btn.reload-btn {
+    background-color: #3b3d46;
+    color: #eee;
+}
+
+.btn.reload-btn.active {
+    background-color: var(--safe-color);
+    color: #000;
+    box-shadow: 0 0 15px rgba(38, 222, 129, 0.4);
+}
