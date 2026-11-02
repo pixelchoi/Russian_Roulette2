@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCAR-H 전술 룰렛 30Rnd ⚡</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <h1>⚡ SCAR-H Tactical Roulette</h1>
+        
+        <div class="input-section">
+            <label>벌칙 항목 입력 (쉼표로 구분):</label>
+            <textarea id="penaltyInput" placeholder="콰당 댄스, 멜론차트 1등곡 부르기, 제자리점프 10회, 통과!">콰당 댄스, 멜론차트 1등곡 부르기, 제자리점프 10회</textarea>
+        </div>
+
+        <!-- 30발 탄창을 시각화하는 세로형 박스 UI -->
+        <div class="magazine-box">
+            <div class="magazine-feed" id="magFeed">
+                <!-- script.js에서 30개의 총알 그리드가 생성됩니다 -->
+            </div>
+        </div>
+
+        <div class="bullet-counter" id="bulletCounter">MAG: 30 / 30 ROUNDS</div>
+        <div class="status-display" id="statusText">조정간 단발. 방아쇠를 당기세요.</div>
+        <div class="result-display" id="resultText"></div>
+
+        <button class="btn" id="shootBtn" onclick="pullTrigger()">단발 사격 (FIRE)</button>
+        <button class="btn reload-btn" id="reloadBtn" onclick="reloadMagazine()">탄창 교체 (RELOAD)</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
