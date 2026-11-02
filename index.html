@@ -16,28 +16,23 @@
             <textarea id="penaltyInput" placeholder="콰당 댄스, 멜론차트 1등곡 부르기, 제자리점프 10회, 통과!">콰당 댄스, 멜론차트 1등곡 부르기, 제자리점프 10회</textarea>
         </div>
 
-        <!-- 30발 탄창을 시각화하는 세로형 박스 UI -->
         <div class="magazine-box">
-            <div class="magazine-feed" id="magFeed">
-                <!-- script.js에서 30개의 총알 그리드가 생성됩니다 -->
-            </div>
+            <div class="magazine-feed" id="magFeed"></div>
         </div>
 
         <div class="bullet-counter" id="bulletCounter">MAG: 30 / 30 ROUNDS</div>
         <div class="status-display" id="statusText">조정간 단발. 사격 준비 완료.</div>
         <div class="result-display" id="resultText"></div>
 
-        <!-- 제어 버튼 영역 (연사 버튼 추가) -->
         <div class="control-group">
             <button class="btn" id="shootBtn" onclick="pullTrigger()">단발 사격 (SEMI)</button>
             <button class="btn auto-btn" id="autoBtn" onclick="startFullAuto()">연사 사격 (AUTO)</button>
             <button class="btn reload-btn" id="reloadBtn" onclick="reloadMagazine()">탄창 교체 (RELOAD)</button>
         </div>
 
-        <!-- 비밀 저격 입력창 (B급 낚시용 기믹) -->
         <div class="secret-section">
             <label>🎯 저격 순서 지정 (비밀 입력창):</label>
-            <input type="number" id="secretTarget" min="1" max="30" placeholder="예: 7 (7번째 사수 확정 당첨)">
+            <input type="number" id="secretTarget" min="1" max="30" placeholder="예: 7">
             <small>※ 입력된 숫자의 사격 순서에 무조건 벌칙탄이 배치됩니다. (비워두면 100% 랜덤)</small>
         </div>
     </div>
